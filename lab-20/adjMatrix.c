@@ -1,26 +1,36 @@
 #include <stdio.h>
 
-void createAdjMatrix(int edges[][2], int adjMatrix[][5], int e)
+#define V 5 // number of vertices
+
+int main()
 {
-    for (int i = 0; i < e; i++)
+    int adj[V][V] = {0}; // initialize all to 0
+
+    // Define 6 edges (undirected)
+    int edges[6][2] = {
+        {0, 1},
+        {0, 2},
+        {1, 2},
+        {1, 3},
+        {2, 4},
+        {3, 4}};
+
+    // Fill adjacency matrix
+    for (int i = 0; i < 6; i++)
     {
         int u = edges[i][0];
         int v = edges[i][1];
-        adjMatrix[u][v] = 1;
-        adjMatrix[v][u] = 1;
+        adj[u][v] = 1;
+        adj[v][u] = 1;
     }
-}
-int main()
-{
-    int adjMatrix[5][5] = {0};
-    int edges[6][2] = {{0, 1}, {0, 2}, {1, 2}, {1, 3}, {2, 4}, {3, 4}};
-    int e = sizeof(edges) / sizeof(edges[0]);
-    createAdjMatrix(edges, adjMatrix, e);
-    for (int i = 0; i < 5; i++)
+
+    // Display the matrix
+    printf("Adjacency Matrix:\n");
+    for (int i = 0; i < V; i++)
     {
-        for (int j = 0; j < 5; j++)
+        for (int j = 0; j < V; j++)
         {
-            printf("%d ", adjMatrix[i][j]);
+            printf("%d ", adj[i][j]);
         }
         printf("\n");
     }

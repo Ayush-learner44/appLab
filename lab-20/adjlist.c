@@ -1,68 +1,72 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define Max 10
+
 typedef struct Node
 {
-    int key;
-    struct Node* next;
+    int vertex;
+    struct Node *next;
 } node;
 
-node* createNode(int key)
+node *createNode(int vertex)
 {
-    node* newNode = malloc(sizeof(node));
-    newNode->key = key;
+    node *newNode = malloc(sizeof(node));
+    newNode->vertex = vertex;
     newNode->next = NULL;
     return newNode;
 }
 
-void createAdjList(node* adjList[], int u, int v)
+void addEdge(node *graph[Max], int src, int dest)
 {
-    node* newNode = createNode(v);
-    newNode->next = adjList[u];
-    adjList[u] = newNode;
+    node *newNode = createNode(dest);
+    newNode->next = graph[src];
+    graph[src] = newNode;
 
-    newNode = createNode(u);
-    newNode->next = adjList[v];
-    adjList[v] = newNode;
+    newNode = createNode(src);
+    newNode->next = graph[dest];
+    graph[dest] = newNode;
 }
 
 int main()
 {
-    int u, v, edges, vertices;
-    printf("Enter the value of edges and vertices: ");
-    scanf("%d%d", &edges, &vertices);
+    int vertices;
+    node *graph[Max] = {NULL};
 
-    node* adjList[vertices];
+    printf("Number of vertices? : ");
+    scanf("%d", &vertices);
 
-    for (int i = 0; i < vertices; i++)
+    // For each source, keep asking destinations until user types -1
+    for (int src = 0; src < vertices; src++)
     {
-        adjList[i] = NULL;
-    }
-
-    printf("Enter the values (u,v):\n ");
-
-    for (int i = 0; i < edges; i++)
-    {
-        scanf("%d%d", &u, &v);
-        createAdjList(adjList, u, v);
-    }
-
-    for (int i = 0; i < vertices; i++)
-    {
-        printf("Vertex %d is connected to: ", i);
-        node* temp = adjList[i];
-        if (!temp)
+        printf("\nEnter destinations for source %d (type -1 to stop):\n", src);
+        while (1)
         {
-            printf("None");
-        }
-        else
-        {
-            while (temp)
+            int dest;
+            printf("Destination? : ");
+            scanf("%d", &dest);
+
+            if (dest == -1)
+                break; // move to next source
+            if (dest < 0 || dest >= vertices)
             {
-                printf("%d", temp->key);
-                temp = temp->next;
-                if (temp) printf(", ");  // add commas between neighbors
+                printf("Invalid vertex! Try again.\n");
+                continue;
             }
+            addEdge(graph, src, dest);
+        }
+    }
+
+    // Display adjacency list
+    printf("\nThe Graph (Adjacency List):\n");
+    for (int i = 0; i < vertices; i++)
+    {
+        printf("%d : ", i);
+        node *temp = graph[i];
+        while (temp)
+        {
+            printf("%d ", temp->vertex);
+            temp = temp->next;
         }
         printf("\n");
     }
