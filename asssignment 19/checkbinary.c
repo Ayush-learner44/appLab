@@ -10,50 +10,75 @@ typedef struct Node
 
 node *root1 = NULL, *root2 = NULL;
 
-node* createNode(int key)
+node *createNode(int key)
 {
-    node* newNode = malloc(sizeof(node));
+    node *newNode = malloc(sizeof(node));
     newNode->data = key;
     newNode->left = newNode->right = NULL;
     return newNode;
 }
 
-node* makeBT(node* root, int key)
+node *makeBT(node *root, int key)
 {
-    if (!root) return createNode(key);
+    if (!root)
+        return createNode(key);
     if (key < root->data)
         root->left = makeBT(root->left, key);
     else if (key > root->data)
         root->right = makeBT(root->right, key);
-    else
-    {
-    }
+
     return root;
 }
 
-void inorder(node* root)
+void inorder(node *root)
 {
-    if (!root) return;
+    if (!root)
+        return;
     inorder(root->left);
     printf("%d ", root->data);
     inorder(root->right);
 }
 
-node* findLCA(node* root, int a, int b)
+int isbst(node *root, int *prev)
 {
-    if (!root) return NULL;
-    if (root->data < a && root->data < b) return findLCA(root->right, a, b);
-    if (root->data > a && root->data > b) return findLCA(root->left, a, b);
+    if (!root)
+        return 1;
+    if (!isbst(root->left, prev))
+        return 0;
+    if (root->data <= *prev)
+        return 0;
+    *prev = root->data;
+    if (!isbst(root->right, prev))
+        return 0;
+    return 1;
+}
+
+int binaryCheck(node *root)
+{
+    int prev = -999999;
+    return isbst(root, &prev);
+}
+
+node *findLCA(node *root, int a, int b)
+{
+    if (!root)
+        return NULL;
+    if (root->data < a && root->data < b)
+        return findLCA(root->right, a, b);
+    if (root->data > a && root->data > b)
+        return findLCA(root->left, a, b);
     return root;
 }
 
-void printTree(node* root, int space)
+void printTree(node *root, int space)
 {
-    if (!root) return;
+    if (!root)
+        return;
     space += 5;
     printTree(root->right, space);
     printf("\n");
-    for (int i = 0; i < space; i++) printf(" ");
+    for (int i = 0; i < space; i++)
+        printf(" ");
     printf("%d ", root->data);
     printTree(root->left, space);
 }
@@ -71,12 +96,18 @@ int main()
     printTree(root1, 0);
     printf("\n");
 
-    node* temp = findLCA(root1, 8, 5);
+    node *temp = findLCA(root1, 8, 5);
     if (temp)
     {
-        printf("LCA: %d", temp->data);
+        printf("LCA: %d\n", temp->data);
     }
     else
-        printf("No LCA");
+        printf("No LCA\n");
+
+    if (binaryCheck(root1))
+        printf("Yes this is binary tree!\n");
+    else
+        printf("Nope! NOT BST!!");
+
     return 0;
 }

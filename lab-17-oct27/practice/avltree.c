@@ -95,16 +95,6 @@ node *insert(node *root, int key)
     return root;
 }
 
-node *findmin(node *root)
-{
-    node *temp = root;
-    while (temp->left != NULL)
-    {
-        temp = temp->left;
-    }
-    return temp;
-}
-
 void inorder(node *root)
 {
     if (!root)
@@ -113,90 +103,6 @@ void inorder(node *root)
     printf("%d : balance %d \n", root->data, getbalance(root));
     inorder(root->right);
 }
-node *deleteNode(node *root, int key)
-{
-    if (!root)
-        return root;
-
-    if (key < root->data)
-        root->left = deleteNode(root->left, key);
-    else if (key > root->data)
-        root->right = deleteNode(root->right, key);
-    else
-    {
-        // Case 1: No child
-        if (!root->left && !root->right)
-        {
-            free(root);
-            return NULL;
-        }
-        // Case 2: One child
-        else if (!root->left || !root->right)
-        {
-            node *temp = root->left ? root->left : root->right;
-            free(root);
-            return temp;
-        }
-        // Case 3: Two children
-        else
-        {
-            node *temp = findmin(root->right);
-            root->data = temp->data;
-            root->right = deleteNode(root->right, temp->data);
-        }
-    }
-
-    // Update height
-    root->height = 1 + max(height(root->left), height(root->right));
-
-    // Balance
-    int balance = getbalance(root);
-
-    // Left Left
-    if (balance > 1 && getbalance(root->left) >= 0)
-        return rightRotate(root);
-
-    // Left Right
-    if (balance > 1 && getbalance(root->left) < 0)
-    {
-        root->left = leftRotate(root->left);
-        return rightRotate(root);
-    }
-
-    // Right Right
-    if (balance < -1 && getbalance(root->right) <= 0)
-        return leftRotate(root);
-
-    // Right Left
-    if (balance < -1 && getbalance(root->right) > 0)
-    {
-        root->right = rightRotate(root->right);
-        return leftRotate(root);
-    }
-
-    return root;
-}
-int countInRange(node *root, int low, int high)
-{
-    if (!root)
-        return 0;
-
-    int count = 0;
-
-    // If current node is in range, count it
-    if (root->data >= low && root->data <= high)
-        count = 1;
-
-    // If root->data > low, left subtree may have valid nodes
-    if (root->data > low)
-        count += countInRange(root->left, low, high);
-
-    // If root->data < high, right subtree may have valid nodes
-    if (root->data < high)
-        count += countInRange(root->right, low, high);
-
-    return count;
-}
 
 int main()
 {
@@ -204,17 +110,13 @@ int main()
     int n = sizeof(keys) / sizeof(keys[0]);
 
     node *root = NULL;
+
     for (int i = 0; i < n; i++)
+    {
         root = insert(root, keys[i]);
+    }
 
-    printf("Inorder Traversal before deletion:\n");
+    printf("Inorder Traversal:\n");
     inorder(root);
-
-    root = deleteNode(root, 20); // delete key 20
-    root = deleteNode(root, 90); // delete key 90
-
-    printf("\nInorder Traversal after deletion:\n");
-    inorder(root);
-
     return 0;
 }

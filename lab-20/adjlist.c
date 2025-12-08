@@ -23,9 +23,9 @@ void addEdge(node *graph[Max], int src, int dest)
     newNode->next = graph[src];
     graph[src] = newNode;
 
-    newNode = createNode(src);
-    newNode->next = graph[dest];
-    graph[dest] = newNode;
+    // newNode = createNode(src);
+    // newNode->next = graph[dest];
+    // graph[dest] = newNode;
 }
 
 int main()
