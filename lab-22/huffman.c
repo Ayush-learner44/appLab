@@ -83,6 +83,7 @@ int main()
         freqMap[(unsigned char)str[i]]++;
 
     Node nodes[256];
+
     int size = 0;
     for (int i = 0; i < 256; i++)
     {
